@@ -6,6 +6,7 @@
   - Database not included
   - NNsite - base
   - Drawboi -futere drawing panel
+  - Example usage of get_db.py class in timer.py
 
 
 ## To run django web
