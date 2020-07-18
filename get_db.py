@@ -1,13 +1,13 @@
-#!/usr/bin/env pypy
 import struct
+import random
 from struct import unpack
 
 
 class get_db:
     def __init__(self, name, data_type):
-        self.data_type = data_type # Data types are enumerate in method unpack_drawing inside of return
-        self.name = name # Name of data
-        self.show(self.name, self.data_type)
+        self.data_type = data_type  # Data types are enumerate in method unpack_drawing inside of return
+        self.name = name  # Name of data
+        self.data = self.show(self.name, self.data_type)
 
     @staticmethod
     def unpack_drawing(file_handle):
@@ -41,6 +41,9 @@ class get_db:
                     break
 
     def show(self, name, data_type):
+        i = 0
+        index = random.randint(1, 100)
         for drawing in self.unpack_drawings(name):
-            # do something with the drawing
-            print(drawing[data_type])
+            i += 1
+            if i == index:
+                return drawing[data_type]
