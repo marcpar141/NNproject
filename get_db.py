@@ -4,8 +4,9 @@ from struct import unpack
 
 
 class get_db:
-    def __init__(self):
-        self.show()
+    def __init__(self, name):
+        self.name = name
+        self.show(self.name)
 
     @staticmethod
     def unpack_drawing(file_handle):
@@ -38,7 +39,7 @@ class get_db:
                 except struct.error:
                     break
 
-    def show(self):
+    def show(self, self.name):
         for drawing in self.unpack_drawings('db/nose.bin'):
             # do something with the drawing
             print(drawing['timestamp'])
