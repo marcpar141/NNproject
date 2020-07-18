@@ -41,6 +41,6 @@ class get_db:
                     break
 
     def show(self, name, data_type):
-        for drawing in self.unpack_drawings('db/nose.bin'):
+        for drawing in self.unpack_drawings(name):
             # do something with the drawing
-            print(drawing[self.data_type])
+            print(drawing[data_type])
