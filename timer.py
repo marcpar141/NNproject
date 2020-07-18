@@ -9,7 +9,8 @@ You can use this to test between Python versions and Pypy.
 Between Python 3.8 and Pypy was difference of about 0.7sec! to load and ptint data
 """
 start_time = time.time()
-get = get_db.get_db("db/nose.bin", "image")
+get = get_db.get_db("D://Repos/NNproject/NNsite/db/ant.bin")
 
 print("%s" % (time.time() - start_time))
-print(get.data)
+print(get.data["image"])
+print(get.data["key_id"])
