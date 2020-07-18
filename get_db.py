@@ -4,10 +4,9 @@ from struct import unpack
 
 
 class get_db:
-    def __init__(self, name, data_type):
-        self.data_type = data_type  # Data types are enumerate in method unpack_drawing inside of return
-        self.name = name  # Name of data
-        self.data = self.show(self.name, self.data_type)
+    def __init__(self, path):
+        self.path = path  # path for data like "ant.bin"
+        self.data = self.show(self.path)
 
     @staticmethod
     def unpack_drawing(file_handle):
@@ -40,10 +39,10 @@ class get_db:
                 except struct.error:
                     break
 
-    def show(self, name, data_type):
+    def show(self, path):
         i = 0
         index = random.randint(1, 100)
-        for drawing in self.unpack_drawings(name):
+        for drawing in self.unpack_drawings(path):
             i += 1
             if i == index:
-                return drawing[data_type]
+                return drawing
