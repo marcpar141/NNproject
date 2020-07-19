@@ -40,8 +40,11 @@ class get_db:
                     break
 
     def show(self, path):
+        max_i = 0
+        for drawing in self.unpack_drawings(path):
+            max_i += 1
         i = 0
-        index = random.randint(1, 100)
+        index = random.randint(1, max_i)
         for drawing in self.unpack_drawings(path):
             i += 1
             if i == index:
