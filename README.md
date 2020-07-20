@@ -14,4 +14,4 @@
   1. Run console iside NNsite directory
   2. Type in command: python manage.py runserver
   3. Enter outputed link to local host
-  4. See Error 404 because I've not created anything inside yet
+  4. Add /drawboi ,django should say hi
