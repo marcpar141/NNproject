@@ -15,4 +15,4 @@
   1. Run console iside NNsite directory
   2. Type in command: python manage.py runserver
   3. Enter outputed link to local host
-  4. Add /drawboi ,django should say hi
+  4. django should say hi
