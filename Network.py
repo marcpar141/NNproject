@@ -1,11 +1,11 @@
 import numpy as np
-import get_db
+import get_bin
 import matplotlib.pyplot as plt
 
 
 def parse_line(path):
     """Parse an ndjson line and return ink (as np array) and classname."""
-    sample = get_db.get_db(path).data
+    sample = get_bin.get_bin(path).data
     class_name = [letter for letter in path]
     class_name = class_name[:len(class_name)-4]
     class_name = ''.join(class_name[3:])
