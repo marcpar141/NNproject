@@ -3,7 +3,7 @@ import random
 from struct import unpack
 
 
-class get_db:
+class get_bin:
     def __init__(self, path):
         self.path = path  # path for data like "ant.bin"
         self.data = self.show(self.path)
