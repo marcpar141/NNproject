@@ -1,6 +1,5 @@
 import numpy as np
 import get_bin
-import matplotlib.pyplot as plt
 
 
 def parse_line(path):
@@ -30,9 +29,7 @@ def parse_line(path):
     # 2. Compute deltas.
     np_ink[1:, 0:2] -= np_ink[0:-1, 0:2]
     np_ink = np_ink[1:, :]
-    arr_ = np.squeeze(np_ink)  # you can give axis attribute if you wanna squeeze in specific dimension
-    plt.imshow(arr_)
-    plt.show()
+    # you can give axis attribute if you wanna squeeze in specific dimension
     return np_ink, class_name
 
 
