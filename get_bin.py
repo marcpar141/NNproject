@@ -49,3 +49,10 @@ class get_bin:
             i += 1
             if i == index:
                 return drawing
+
+    def return_all(self):
+        whole_file = []
+        for drawing in self.unpack_drawings(self.path):
+            whole_file.append(drawing["image"])
+
+        return whole_file

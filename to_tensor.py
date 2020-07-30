@@ -1,4 +1,4 @@
-from numpy import zeros, min, max, float32
+from numpy import zeros, min, max, float32, shape
 import get_bin
 
 
@@ -31,3 +31,7 @@ def parse_line(path):
     np_ink = np_ink[1:, :]
     # you can give axis attribute if you wanna squeeze in specific dimension
     return np_ink, class_name
+
+
+data = parse_line("D://db/car.bin")
+print(data, shape(data[0])[0])
