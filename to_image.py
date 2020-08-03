@@ -7,7 +7,8 @@ import shutil
 
 
 class to_image:
-    def __init__(self, class_name):
+    def __init__(self, class_name, chosen_type="png"):
+        self.chosen_type = chosen_type
         self.class_name = class_name
         self.data = np.array(get_bin.get_bin("D://db/{}.bin".format(self.class_name)).data["image"])
         print(self.data)
@@ -64,17 +65,17 @@ class to_image:
         self._draw()
         self.s = self.s.getcanvas().postscript(file=''.join([self.class_name, '.ps']))
 
-    def _conv_ps_png(self):
+    def _conv_ps(self):
         self._to_ps()
         list_ps = glob.glob('*.ps')
         for file in list_ps:
             root = file[:-3]
-            pngfile = ''.join([root, ".png"])
+            pngfile = ''.join([root, ".{}".format(self.chosen_type)])
             os.system(''.join(['magick', ' ', 'convert ', file, " -strip", " ", pngfile]))
 
     def _chop_blank(self):
-        self._conv_ps_png()
-        pil_img = Image.open('car.png')
+        self._conv_ps()
+        pil_img = Image.open('car.{}'.format(self.chosen_type))
         pil_img.getbbox()
         print(pil_img.size)
         cropped_img = pil_img.crop(pil_img.getbbox())
@@ -82,15 +83,16 @@ class to_image:
         print(np_img)
         img = Image.fromarray(np_img)
         scaled_img = img.resize((32, 32))
-        if os.path.exists("{}.png".format(self.class_name)):
-            scaled_img.save("{}{}.png".format(self.class_name, self.index, interpolation="nearest"))
+        if os.path.exists("{}.{}}".format(self.class_name, self.chosen_type)):
+            scaled_img.save("{}{}.{}".format(self.class_name, self.index, self.chosen_type), interpolation="nearest")
             self.index += 1
         else:
-            scaled_img.save("{}.png".format(self.class_name), interpolation="nearest")
+            scaled_img.save("{}.{}".format(self.class_name, self.chosen_type), interpolation="nearest")
 
 
 class all_to_image:
-    def __init__(self, class_name, how_many=10):
+    def __init__(self, class_name, how_many=10, chosen_type="png"):
+        self.chosen_type = chosen_type
         self.how_many = how_many
         self.class_name = class_name
         self.my_array = []
@@ -161,7 +163,7 @@ class all_to_image:
     def _chop_all_blank(self):
         self._conv_all_ps_png()
         self.index = 0
-        for drawing in os.listdir("D://Repos/NNproject/png_folder"):
+        for drawing in os.listdir("D://Repos/NNproject/pic_folder"):
             pil_img = Image.open(drawing)
             pil_img.getbbox()
             print(pil_img.size)
@@ -170,23 +172,23 @@ class all_to_image:
             print(np_img)
             img = Image.fromarray(np_img)
             scaled_img = img.resize((32, 32))
-            if os.path.exists("{}.png".format(self.class_name)):
-                scaled_img.save("{}{}.png".format(self.class_name, self.index, interpolation="nearest"))
+            if os.path.exists("{}.{}".format(self.class_name, self.chosen_type)):
+                scaled_img.save("{}{}.{}".format(self.class_name, self.index, self.chosen_type)
+                                , interpolation="nearest")
                 self.index += 1
             else:
-                scaled_img.save("{}.png".format(self.class_name), interpolation="nearest")
+                scaled_img.save("{}.{}".format(self.class_name, self.chosen_type), interpolation="nearest")
 
-    @staticmethod
-    def _conv_all_ps_png():
+    def _conv_all_ps_png(self):
         list_ps = glob.glob('ps_folder/*.ps')
         for file in list_ps:
             root = file[:-3]
-            pngfile = ''.join([root, ".png"])
+            pngfile = ''.join([root, ".{}".format(self.chosen_type)])
             os.system(''.join(['magick', ' ', 'convert ', file, " ", pngfile]))
-        png_in_ps = glob.glob('ps_folder/*.png')
+        png_in_ps = glob.glob('ps_folder/*.{}'.format(self.chosen_type))
         for file in png_in_ps:
             shutil.move("D://Repos/NNproject/{}".format(file),
-                        "D://Repos/NNproject/png_folder")
+                        "D://Repos/NNproject/pic_folder")
 
     @staticmethod
     def clear_ps():
