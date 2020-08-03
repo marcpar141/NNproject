@@ -10,6 +10,7 @@ class to_image:
     def __init__(self, class_name):
         self.class_name = class_name
         self.data = np.array(get_bin.get_bin("D://db/{}.bin".format(self.class_name)).data["image"])
+        print(self.data)
         self.my_array = []
         self._fill()
         self.index = 0
@@ -24,6 +25,7 @@ class to_image:
 
             self.my_array.append(strokes)
             i += 1
+            print(strokes)
 
     def _draw(self):
         self.s = turtle.Screen()
@@ -77,6 +79,7 @@ class to_image:
         print(pil_img.size)
         cropped_img = pil_img.crop(pil_img.getbbox())
         np_img = np.array(cropped_img)
+        print(np_img)
         img = Image.fromarray(np_img)
         scaled_img = img.resize((32, 32))
         if os.path.exists("{}.png".format(self.class_name)):
@@ -91,12 +94,14 @@ class all_to_image:
         self.class_name = class_name
         self.my_array = []
         self.index = 0
+        self._to_ps()
         self._chop_all_blank()
 
     def _draw(self):
         self.s = turtle.Screen()
         self.s.colormode(1)
         t = turtle.Turtle()
+        t.speed('fastest')
         t.hideturtle()
 
         for j in self.my_array:
@@ -122,8 +127,7 @@ class all_to_image:
     def _to_ps(self):
         self._draw()
         self.s = self.s.getcanvas().postscript(file="{}{}.ps".format(self.class_name, self.index))
-        os.listdir("D://Repos/NNproject/")
-        shutil.move("D://Repos/NNproject/{}{}.ps".format(self.class_name, self.index), "D://Repos/NNproject/ps_folder")
+        shutil.move("D://Repos/NNproject/{}.ps".format(self.class_name), "D://Repos/NNproject/ps_folder")
         os.remove("D://Repos/NNproject/{}{}.ps".format(self.class_name, self.index))
 
     def _ps_everything(self):
@@ -134,13 +138,21 @@ class all_to_image:
 
     def _chop_all_blank(self):
         self._conv_all_ps_png()
-        for drawing in
-            pil_img = Image.open('car.png')
-        np_img = np.array(pil_img)
-        idx0 = np.argwhere(np.all(np_img)[..., :] == 0, axis=0)
-        idx255 = np.argwhere(np.all(np_img[..., :] == 255, axis=0))
-
-        print(np_img, np_img.shape)
+        self.index = 0
+        for drawing in os.listdir("D://Repos/NNproject/png_folder"):
+            pil_img = Image.open(drawing)
+            pil_img.getbbox()
+            print(pil_img.size)
+            cropped_img = pil_img.crop(pil_img.getbbox())
+            np_img = np.array(cropped_img)
+            print(np_img)
+            img = Image.fromarray(np_img)
+            scaled_img = img.resize((32, 32))
+            if os.path.exists("{}.png".format(self.class_name)):
+                scaled_img.save("{}{}.png".format(self.class_name, self.index, interpolation="nearest"))
+                self.index += 1
+            else:
+                scaled_img.save("{}.png".format(self.class_name), interpolation="nearest")
 
     @staticmethod
     def _conv_all_ps_png():
@@ -152,6 +164,6 @@ class all_to_image:
 
 
 if __name__ == "__main__":
-    all_img = all_to_image("car")
-    # img = to_image("car")
-    # img.save()
+    img = all_to_image("car")
+#    img = to_image("car")
+#    img.save()
