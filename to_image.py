@@ -79,10 +79,10 @@ class to_image:
         pil_img.getbbox()
         print(pil_img.size)
         cropped_img = pil_img.crop(pil_img.getbbox())
-        np_img = np.array(cropped_img)
-        print(np_img)
-        img = Image.fromarray(np_img)
-        scaled_img = img.resize((32, 32))
+        # np_img = np.array(cropped_img)
+        # print(np_img)
+        # img = Image.fromarray(np_img)
+        scaled_img = cropped_img.resize((32, 32))
         if os.path.exists("{}.{}}".format(self.class_name, self.chosen_type)):
             scaled_img.save("{}{}.{}".format(self.class_name, self.index, self.chosen_type), interpolation="nearest")
             self.index += 1
@@ -91,12 +91,22 @@ class to_image:
 
 
 class all_to_image:
-    def __init__(self, class_name, how_many=10, chosen_type="png"):
+    """
+    Tanslating chosen number of pictures from vector array to chosen image type( between png and bmp )
+
+    """
+
+    def __init__(self, class_name, chosen_type="png"
+                 , lower_bound=0, higher_bound=100):
+
+        self.lower_bound = lower_bound
+        self.higher_bound = higher_bound
         self.chosen_type = chosen_type
-        self.how_many = how_many
         self.class_name = class_name
         self.my_array = []
         self.index = 0
+        self.current_dir = os.getcwd()
+        self.clear_ps()
         self._ps_everything()
         self._chop_all_blank()
 
@@ -139,65 +149,82 @@ class all_to_image:
 
                 V_prev = V
 
-
     def _to_ps(self):
         self._fill()
         self._draw()
         self.my_array = []
         self.s = self.s.getcanvas().postscript(file="{}{}.ps".format(self.class_name, self.index))
         self.t.clear()
-        shutil.move("D://Repos/NNproject/{}{}.ps".format(self.class_name, self.index), "D://Repos/NNproject/ps_folder")
+        shutil.move("".join([self.current_dir, "/", self.class_name, str(self.index), ".ps"]),
+                    "".join([self.current_dir, "/ps_folder"]))
 
     def _ps_everything(self):
         self.data = get_bin.get_bin("D://db/{}.bin".format(self.class_name)).return_all()
         self.clear_ps()
         for i, drawing in enumerate(self.data):
-            if i < self.how_many:
-                print(drawing)
-                self.data = drawing
-                self._to_ps()
-                self.index += 1
-            else:
-                break
+            if i >= self.lower_bound:
+                if i < self.higher_bound:
+                    print(drawing)
+                    self.data = drawing
+                    self._to_ps()
+                    self.index += 1
+                else:
+                    break
 
     def _chop_all_blank(self):
         self._conv_all_ps_png()
-        self.index = 0
-        for drawing in os.listdir("D://Repos/NNproject/pic_folder"):
-            pil_img = Image.open(drawing)
+        self.index = self.lower_bound
+        for drawing in os.listdir("pic_folder/"):
+            pil_img = Image.open("".join([self.current_dir, "/pic_folder/", drawing]))
             pil_img.getbbox()
             print(pil_img.size)
             cropped_img = pil_img.crop(pil_img.getbbox())
-            np_img = np.array(cropped_img)
-            print(np_img)
-            img = Image.fromarray(np_img)
-            scaled_img = img.resize((32, 32))
-            if os.path.exists("{}.{}".format(self.class_name, self.chosen_type)):
-                scaled_img.save("{}{}.{}".format(self.class_name, self.index, self.chosen_type)
-                                , interpolation="nearest")
-                self.index += 1
-            else:
-                scaled_img.save("{}.{}".format(self.class_name, self.chosen_type), interpolation="nearest")
+            # print(cropped_img)
+            # np_img = np.array(cropped_img)
+            # print(np_img)
+            # img = Image.fromarray(np_img)
+            scaled_img = cropped_img.resize((32, 32))
+            scaled_img.save("{}{}.{}".format(self.class_name, self.index, self.chosen_type)
+                            , interpolation="nearest")
+            self.index += 1
+
+        self.clear_pic()
+        for file in os.listdir(self.current_dir):
+            if file.endswith(".{}".format(self.chosen_type)):
+                shutil.move("".join([self.current_dir, "/", file]),
+                            "".join([self.current_dir, "/pic_folder/", file]))
 
     def _conv_all_ps_png(self):
-        list_ps = glob.glob('ps_folder/*.ps')
+        list_ps = os.listdir('ps_folder/')
+        print(list_ps)
         for file in list_ps:
             root = file[:-3]
-            pngfile = ''.join([root, ".{}".format(self.chosen_type)])
-            os.system(''.join(['magick', ' ', 'convert ', file, " ", pngfile]))
-        png_in_ps = glob.glob('ps_folder/*.{}'.format(self.chosen_type))
-        for file in png_in_ps:
-            shutil.move("D://Repos/NNproject/{}".format(file),
-                        "D://Repos/NNproject/pic_folder")
+            pngfile = ''.join([root, ".", self.chosen_type])
+            os.system(''.join(['magick', ' ', 'convert ', "ps_folder/", file, " ", pngfile]))
+            shutil.move("".join([self.current_dir, "/", pngfile]),
+                        "".join([self.current_dir, "/pic_folder/", pngfile]))
+        self.clear_ps()
+        self.clear_root()
 
-    @staticmethod
-    def clear_ps():
-        for filename in os.listdir("D://Repos/NNproject/ps_folder/"):
-            filepath = os.path.join("D://Repos/NNproject/ps_folder/", filename)
+    def clear_ps(self):
+        for filename in os.listdir("".join([self.current_dir, "/ps_folder"])):
+            filepath = os.path.join("".join([self.current_dir, "/ps_folder/", filename]))
             os.unlink(filepath)
+
+    def clear_pic(self):
+        for filename in os.listdir("".join([self.current_dir, "/pic_folder"])):
+            filepath = os.path.join("".join([self.current_dir, "/pic_folder/", filename]))
+            os.unlink(filepath)
+
+    def clear_root(self):
+        for filename in os.listdir(self.current_dir):
+            if filename.endswith(".png"):
+                filepath = os.path.join("".join([self.current_dir, "/", filename]))
+                os.unlink(filepath)
 
 
 if __name__ == "__main__":
-    img = all_to_image("car")
+    img = all_to_image("car", lower_bound=0, higher_bound=150)
+
 #    img = to_image("car")
 #    img.save()
