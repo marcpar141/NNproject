@@ -125,8 +125,11 @@ class all_to_image:
     def _draw(self):
         self.s = turtle.Screen()
         self.s.colormode(1)
+        self.s.tracer(0, 0)
         self.t = turtle.Turtle()
+
         self.t.speed('fastest')
+
         self.t.hideturtle()
 
         for j in self.my_array:
@@ -148,6 +151,7 @@ class all_to_image:
                     self.t.goto(V)
 
                 V_prev = V
+            self.s.update()
 
     def _to_ps(self):
         self._fill()
