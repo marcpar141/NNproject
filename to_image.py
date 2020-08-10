@@ -3,6 +3,7 @@ import numpy as np
 import turtle
 from PIL import Image
 import os, glob
+import multi_magick
 import shutil
 
 
@@ -176,7 +177,7 @@ class all_to_image:
                     break
 
     def _chop_all_blank(self):
-        self._conv_all_ps_png()
+        self.conv_all_ps_png()
         self.index = self.lower_bound
         for drawing in os.listdir("pic_folder/"):
             pil_img = Image.open("".join([self.current_dir, "/pic_folder/", drawing]))
@@ -198,15 +199,10 @@ class all_to_image:
                 shutil.move("".join([self.current_dir, "/", file]),
                             "".join([self.current_dir, "/pic_folder/", file]))
 
-    def _conv_all_ps_png(self):
+    def conv_all_ps_png(self):
         list_ps = os.listdir('ps_folder/')
         print(list_ps)
-        for file in list_ps:
-            root = file[:-3]
-            pngfile = ''.join([root, ".", self.chosen_type])
-            os.system(''.join(['magick', ' ', 'convert ', "ps_folder/", file, " ", pngfile]))
-            shutil.move("".join([self.current_dir, "/", pngfile]),
-                        "".join([self.current_dir, "/pic_folder/", pngfile]))
+        multi_magick.Magick(list_ps, self.chosen_type, self.current_dir).Parallel()
         self.clear_ps()
         self.clear_root()
 
@@ -228,7 +224,7 @@ class all_to_image:
 
 
 if __name__ == "__main__":
-    img = all_to_image("car", lower_bound=0, higher_bound=150)
+    img = all_to_image("car", lower_bound=0, higher_bound=1500)
 
 #    img = to_image("car")
 #    img.save()
