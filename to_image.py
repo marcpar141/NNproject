@@ -1,10 +1,13 @@
-import get_bin
-import numpy as np
-import turtle
 from PIL import Image
-import os, glob
-import multi_magick
+import numpy as np
+
+import turtle
+import os
+import glob
 import shutil
+
+import get_bin
+import multi_magick
 
 
 class to_image:
@@ -202,7 +205,7 @@ class all_to_image:
     def conv_all_ps_png(self):
         list_ps = os.listdir('ps_folder/')
         print(list_ps)
-        multi_magick.Magick(list_ps, self.chosen_type, self.current_dir).Parallel()
+        multi_magick.Magick(list_ps, self.chosen_type, self.current_dir).parallel()
         self.clear_ps()
         self.clear_root()
 
